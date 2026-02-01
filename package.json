@@ -1,5 +1,5 @@
 {
-  "name": "stablecoin-front-end",
+  "name": "stanlecoin-defi-front-end",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,14 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "16.1.4",
+    "ethers": "^6.16.0",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "viem": "^2.45.0",
+    "wagmi": "^3.4.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.1.4",
+    "eslint-config-next": "16.1.1",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4"
   }
 }
