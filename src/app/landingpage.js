@@ -6,14 +6,12 @@ export default function LandingPage() {
     const [account, setAccount] = useState(null)
 
     const connectWallet = async () => {
-        // ✨ CHANGE: When disconnecting, clear account and set localStorage flag
         if (account) {
             setAccount(null)
             localStorage.setItem("walletDisconnected", "true")
             return
         }
 
-        // check if Metamask is installed
         if (typeof window.ethereum === "undefined") {
             alert("Metamask is not installed! Please install Metamask extension.")
             window.open("https://metamask.io/download/", "_blank")
@@ -21,11 +19,9 @@ export default function LandingPage() {
         }
 
         try {
-            // ✨ CHANGE: Check if user manually disconnected before
             const wasDisconnected = localStorage.getItem("walletDisconnected")
 
             if (wasDisconnected === "true") {
-                // ✨ CHANGE: Force MetaMask popup by requesting permissions
                 try {
                     await window.ethereum.request({
                         method: "wallet_requestPermissions",
@@ -48,7 +44,6 @@ export default function LandingPage() {
     }
 
     useEffect(() => {
-        // ✨ CHANGE: Check if wallet was already connected (AUTO-RECONNECT on refresh)
         const checkIfWalletConnected = async () => {
             if (typeof window.ethereum !== "undefined") {
                 try {
@@ -56,7 +51,6 @@ export default function LandingPage() {
                         method: "eth_accounts",
                     })
                     if (accounts.length > 0) {
-                        // ✨ CHANGE: Only auto-connect if user didn't manually disconnect
                         const wasDisconnected = localStorage.getItem("walletDisconnected")
                         if (wasDisconnected !== "true") {
                             setAccount(accounts[0])
@@ -68,10 +62,8 @@ export default function LandingPage() {
             }
         }
 
-        // ✨ CHANGE: Call this on page load to restore connection
         checkIfWalletConnected()
 
-        // ✨ CHANGE: Listen for account changes from MetaMask
         const handleAccountsChanged = (accounts) => {
             if (accounts.length > 0) {
                 setAccount(accounts[0])
@@ -99,14 +91,12 @@ export default function LandingPage() {
                     onClick={connectWallet}
                     className="bg-black text-white px-6 py-3 rounded-lg text-base font-serif hover:bg-gray-800 transition cursor-pointer"
                 >
-                    {/* ✨ CHANGE: Show "Disconnect" when connected */}
                     {account
                         ? `Disconnect ${account.slice(0, 6)}...${account.slice(-4)}`
                         : "Connect Wallet"}
                 </button>
             </header>
 
-            {/* ✨ CHANGE: Fixed CSS gradient */}
             <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
 
             <div className="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center">

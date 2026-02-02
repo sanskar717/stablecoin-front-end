@@ -1,6 +1,5 @@
 export const fetchEthUsdPrice = async () => {
     try {
-        // 🏆 Binance API - Real-time, fastest, no CORS!
         const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
         
         if (!response.ok) {

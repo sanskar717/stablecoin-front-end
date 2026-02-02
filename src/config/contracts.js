@@ -2,7 +2,6 @@ import DSCEngineABI from "../contracts/DscEngine.json"
 import DecentralizedStableCoinABI from "../contracts/DecentralizedStablecoins.json"
 
 const NETWORKS = {
-    // Anvil local Network
     31337: {
         name: "Anvil local",
         AnvilrpcUrl: "http://127.0.0.1:8545",
@@ -13,7 +12,6 @@ const NETWORKS = {
         },
     },
 
-    // Sepolia Testnet ✅ UPDATED
     11155111: {
         name: "Sepolia Testnet",
         SepoliarpcUrl: "https://eth-sepolia.g.alchemy.com/v2/-qMDxbeGIXs--zEfQVQ1x",
@@ -26,7 +24,7 @@ const NETWORKS = {
 }
 
 export const getNetworkConfig = (chainID) => {
-    return NETWORKS[chainID] || NETWORKS[31337] // Default to Anvil
+    return NETWORKS[chainID] || NETWORKS[31337]
 }
 
 export const getContracts = (chainID) => {

@@ -4,6 +4,7 @@ import { getContracts, getNetworkConfig } from "@/config/contracts"
 import { useState, useEffect, use } from "react"
 import { useEthPrice } from "../../hooks/useEthPrice"
 import HealthFactor from "@/components/HealthFactor"
+import LiveETHTicker from "@/components/LiveETHTicker"
 import MoreMenu from "@/components/MoreMenu"
 
 export default function MainPage() {
@@ -35,7 +36,6 @@ export default function MainPage() {
     const normalizedAccount = account?.toLowerCase() || ""
     const depositedEth = Number(depositMap[normalizedAccount] || 0)
 
-    // ✅ Hydrate on mount
     useEffect(() => {
         try {
             const saved = localStorage.getItem("depositMap")
@@ -63,7 +63,6 @@ export default function MainPage() {
         if (account) {
             setAccount(null)
             setEthBalance(null)
-            // setStableBalance("0.00")
             setDscMinted("0.00")
             localStorage.setItem("walletDisconnected", "true")
             return
@@ -144,14 +143,11 @@ export default function MainPage() {
         if (!ethAmount || !ethPrice) return "0.00"
 
         try {
-            // Use live ETH price from Chainlink
             const ethValue = parseFloat(ethAmount)
             const priceValue = parseFloat(ethPrice)
 
-            // Calculate USD value
             const usdValue = ethValue * priceValue
 
-            // Apply 50% threshold (LIQUIDATION_THRESHOLD from contract)
             const maxMint = usdValue * 0.5
 
             return maxMint.toFixed(2)
@@ -191,13 +187,11 @@ export default function MainPage() {
             const chainId = Number(network.chainId)
             const contracts = getContracts(chainId)
 
-            // 1️⃣ Fetch ETH Balance
             const balance = await provider.getBalance(account)
             const ethBal = ethers.formatEther(balance)
             console.log("✅ ETH Balance:", ethBal)
             setEthBalance(ethBal)
 
-            // 2️⃣ Fetch Minted DSC - Create FRESH instance, don't use dscEngine state
             try {
                 const dscEngineRead = new ethers.Contract(
                     contracts.DSCEngine.address,
@@ -221,7 +215,6 @@ export default function MainPage() {
                 setDscMinted("0.00")
             }
 
-            // 3️⃣ Fetch Deposited ETH
             try {
                 const dscEngineRead = new ethers.Contract(
                     contracts.DSCEngine.address,
@@ -269,7 +262,6 @@ export default function MainPage() {
                     const dscAbi = contracts?.DSCEngine?.abi
 
                     if (!dscAddress || dscAddress === "") {
-                        // ENS error prevention
                         console.error("Missing DSCEngine address for chain:", chainId)
                         return
                     }
@@ -278,7 +270,7 @@ export default function MainPage() {
                         dscAddress,
                         dscAbi,
                         signerInstance,
-                    ) // safe init
+                    ) 
                     setDscEngine(dscEngineInstance)
 
                     const dscContract = new ethers.Contract(
@@ -286,8 +278,6 @@ export default function MainPage() {
                         contracts.DSC.abi,
                         provider,
                     )
-                    // const dscBal = await dscContract.balanceOf(accounts[0])
-                    // setStableBalance(ethers.formatEther(dscBal))
                 }
             }
         }
@@ -335,12 +325,10 @@ export default function MainPage() {
                 )
                 setDscEngine(dscEngineInstance)
 
-                // Refresh balances immediately
                 await refreshBalances()
             } else {
                 setAccount(null)
                 setEthBalance(null)
-                // setStableBalance("0.00")
                 setDscMinted("0.00")
             }
         }
@@ -368,12 +356,11 @@ export default function MainPage() {
                     const chainId = Number(network.chainId)
                     const contracts = getContracts(chainId)
 
-                    // ✅ DIRECTLY call getAccountInfo here - DON'T wait for dscEngine state
                     try {
                         const dscEngineRead = new ethers.Contract(
                             contracts.DSCEngine.address,
                             contracts.DSCEngine.abi,
-                            provider, // read-only provider
+                            provider, 
                         )
 
                         const accountInfo = await dscEngineRead.getAccountInfo(account)
@@ -443,7 +430,6 @@ export default function MainPage() {
 
             alert(`✅ Mint successful! ${amount} DSC minted`)
 
-            // ✅ YEH ADD KAR
             await new Promise((resolve) => setTimeout(resolve, 2000))
             await refreshBalances()
 
@@ -498,6 +484,7 @@ export default function MainPage() {
             <div className="flex-1 flex items-start justify-start px-4 gap-8 pt-12">
                 {/* LEFT - ETH Ticker */}
                 <div className="w-full max-w-md">
+                    <LiveETHTicker />
                 </div>
                 <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl">
                     <h2 className="text-3xl font-serif mb-6">Deposit-ETH</h2>
@@ -562,7 +549,6 @@ export default function MainPage() {
                         {/* ✅ HealthFactor box beside button */}
                         <HealthFactor
                             totalCollateralUSD={depositedEth * parseFloat(ethPrice || "0")}
-                            // totalDSCMinted={parseFloat(stableBalance || "0")}
                             totalDSCMinted={parseFloat(dscMinted || "0")}
                             pendingMint={pendingMintAmount}
                         />
@@ -606,7 +592,6 @@ export default function MainPage() {
                                     const livePrice = parseFloat(ethPrice || "0")
                                     const collateralValue = deposited * livePrice
                                     const maxAllowed = collateralValue * 0.33
-                                    // const alreadyMinted = parseFloat(stableBalance || "0")
                                     const alreadyMinted = parseFloat(dscMinted || "0")
                                     const canMint = Math.max(0, maxAllowed - alreadyMinted)
                                     return canMint.toFixed(2)
@@ -714,7 +699,6 @@ export default function MainPage() {
                                     const totalDeposited = depositedEth
                                     const totalValue = totalDeposited * Number(ethPrice || 0)
                                     const maxMintable = totalValue * 0.33
-                                    // const alreadyMinted = parseFloat(stableBalance || "0")
                                     const alreadyMinted = parseFloat(dscMinted || "0")
                                     const remaining = Math.max(0, maxMintable - alreadyMinted)
                                     return remaining.toFixed(2)
@@ -739,7 +723,7 @@ export default function MainPage() {
                             {parseFloat(dscMinted || "0").toFixed(2)} DSC
                         </p>
                     ) : (
-                        <p className="text-base text-gray-700">—</p> // ✅ ADD THIS
+                        <p className="text-base text-gray-700">—</p> 
                     )}
 
                     <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
