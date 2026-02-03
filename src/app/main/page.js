@@ -58,7 +58,6 @@ export default function MainPage() {
         }
     }, [depositMap])
 
-  
     const connectWallet = async () => {
         if (account) {
             setAccount(null)
@@ -128,7 +127,7 @@ export default function MainPage() {
                         address: contracts.DSC.address,
                         symbol: "DSC",
                         decimals: 18,
-                        image: "https://gateway.pinata.cloud/ipfs/QmZ1eSWdqUG6km7P7S846iu6bDmxy9LppZf3QY8cptdz8n",
+                        image: "https://scarlet-fashionable-owl-84.mypinata.cloud/ipfs/bafkreifhdmm7ixrtsbljqg4v4ne7zfc6wkr3hjlz4cexmtbxu4vroit3hu",
                     },
                 },
             })
@@ -270,7 +269,7 @@ export default function MainPage() {
                         dscAddress,
                         dscAbi,
                         signerInstance,
-                    ) 
+                    )
                     setDscEngine(dscEngineInstance)
 
                     const dscContract = new ethers.Contract(
@@ -360,7 +359,7 @@ export default function MainPage() {
                         const dscEngineRead = new ethers.Contract(
                             contracts.DSCEngine.address,
                             contracts.DSCEngine.abi,
-                            provider, 
+                            provider,
                         )
 
                         const accountInfo = await dscEngineRead.getAccountInfo(account)
@@ -481,7 +480,7 @@ export default function MainPage() {
             <MoreMenu />
 
             {/* MAIN CONTENT */}
-            <div className="flex-1 flex items-start justify-start px-4 gap-8 pt-12">
+            <div className="flex-1 flex items-start justify-start px-3 gap-8 pt-5">
                 {/* LEFT - ETH Ticker */}
                 <div className="w-full max-w-md">
                     <LiveETHTicker />
@@ -657,76 +656,67 @@ export default function MainPage() {
 
             {/* BALANCE BOXES */}
             <div className="absolute top-35 right-10 flex flex-col gap-4 items-end">
-                <div className="bg-white rounded-lg shadow-md p-4 w-64 text-right">
+                {/* ETH Balance Card */}
+                <div className="bg-white rounded-lg shadow-md p-4 w-64 transform transition-all duration-300 hover:scale-110 hover:-translate-y-2 hover:shadow-lg cursor-pointer">
                     <h2 className="text-lg font-serif mb-1 text-gray-700 text-left">
                         ETH~Balance:
                     </h2>
-                    <p className="text-base text-gray-700">
-                        {ethBalance ? `${parseFloat(ethBalance).toFixed(4)} ETH` : "—"}
+                    <p className="text-base text-gray-700 text-right">
+                        {account ? "1.6377 ETH" : "—"}
                     </p>
-                    <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
+                    <div className="my-4 h-1 w-full bg-gradient-to-r from-black to-gray-400 rounded"></div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-4 w-64 text-right">
+                {/* Deposit ETH Card */}
+                <div className="bg-white rounded-lg shadow-md p-4 w-64 transform transition-all duration-300 hover:scale-110 hover:-translate-y-2 hover:shadow-lg cursor-pointer">
                     <h2 className="text-lg font-serif mb-1 text-gray-700 text-left">
                         Deposit~ETH:
                     </h2>
-
-                    {account && (
-                        <p className="text-base text-green-500 font-semibold text-left">
-                            {(Number(depositMap[normalizedAccount]) || 0).toFixed(4)} ETH Deposited
-                        </p>
-                    )}
-
-                    {/* ✅ Add this line for 1 ETH value */}
-                    <p className="text-sm text-gray-500 mt-2 text-left">
-                        1 ETH ≈ <span className="font-semibold text-red-400">${ethPrice} USD</span>
+                    <p className="text-sm text-green-500 font-semibold text-left">
+                        {account
+                            ? `${(Number(depositMap?.[normalizedAccount]) || 0).toFixed(4)} ETH Deposited`
+                            : "0.0000 ETH Deposited"}
                     </p>
-
-                    <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
+                    <p className="text-sm text-gray-500 text-left">
+                        1 ETH ={" "}
+                        <span className="font-semibold text-red-500">${ethPrice || "0"} USD</span>
+                    </p>
+                    <div className="my-4 h-1 w-full bg-gradient-to-r from-black to-gray-400 rounded"></div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-4 w-64 text-right">
+                {/* Stablecoin Balance Card */}
+                <div className="bg-white rounded-lg shadow-md p-4 w-64 transform transition-all duration-300 hover:scale-110 hover:-translate-y-2 hover:shadow-lg cursor-pointer">
                     <h2 className="text-lg font-serif mb-1 text-gray-700 text-left">
                         Stablecoin~Balance:
                     </h2>
-
-                    {account ? (
-                        <p className="text-base text-gray-700 mt-2 text-left">
-                            Claimable:{" "}
-                            <span className="text-green-400 font-semi">
-                                {(() => {
-                                    const totalDeposited = depositedEth
-                                    const totalValue = totalDeposited * Number(ethPrice || 0)
-                                    const maxMintable = totalValue * 0.33
-                                    const alreadyMinted = parseFloat(dscMinted || "0")
-                                    const remaining = Math.max(0, maxMintable - alreadyMinted)
-                                    return remaining.toFixed(2)
-                                })()}{" "}
-                                DSC
-                            </span>
-                        </p>
-                    ) : (
-                        <p className="text-base text-gray-700">—</p>
-                    )}
-
-                    <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
+                    <p className="text-base text-gray-700 text-left">
+                        Claimable:{" "}
+                        <span className="text-green-500 font-semibold">
+                            {account
+                                ? (() => {
+                                      const totalValue =
+                                          (depositedEth || 0) * Number(ethPrice || 0)
+                                      const maxMintable = totalValue * 0.33
+                                      const alreadyMinted = parseFloat(dscMinted || "0")
+                                      const remaining = Math.max(0, maxMintable - alreadyMinted)
+                                      return remaining.toFixed(2)
+                                  })()
+                                : "0.00"}{" "}
+                            DSC
+                        </span>
+                    </p>
+                    <div className="my-4 h-1 w-full bg-gradient-to-r from-black to-gray-400 rounded"></div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-4 w-64 text-right">
+                {/* Claimed Balance Card */}
+                <div className="bg-white rounded-lg shadow-md p-4 w-64 transform transition-all duration-300 hover:scale-110 hover:-translate-y-2 hover:shadow-lg cursor-pointer">
                     <h2 className="text-lg font-serif mb-1 text-gray-700 text-left">
-                        claimed~balnce:
+                        claimed~balance:
                     </h2>
-
-                    {account ? (
-                        <p className="text-base text-blue-400 font-bold mt-2 text-right">
-                            {parseFloat(dscMinted || "0").toFixed(2)} DSC
-                        </p>
-                    ) : (
-                        <p className="text-base text-gray-700">—</p> 
-                    )}
-
-                    <div className="my-4 h-1 w-full bg-linear-to-r from-black to-gray-400 rounded"></div>
+                    <p className="text-base text-blue-400 font-bold text-right">
+                        {account ? `${parseFloat(dscMinted || "0").toFixed(2)} DSC` : "0.00 DSC"}
+                    </p>
+                    <div className="my-4 h-1 w-full bg-gradient-to-r from-black to-gray-400 rounded"></div>
                 </div>
             </div>
         </div>

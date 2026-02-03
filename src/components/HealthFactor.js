@@ -42,7 +42,7 @@ export default function HealthFactor({ totalCollateralUSD, totalDSCMinted, pendi
 
     if (hasNoCollateral) {
         return (
-            <div className="border-2 border-yellow-500 bg-yellow-50 rounded-lg p-4 w-fit h-fit flex flex-col">
+            <div className="border-2 border-yellow-500 bg-yellow-50 rounded-lg p-2 w-fit h-fit flex flex-col">
                 <h2 className="text-yellow-700 font-bold text-lg mb-2"> Deposit ETH First!</h2>
                 <p className="text-yellow-600 text-sm mb-2">
                     You must deposit ETH collateral before minting DSC.
