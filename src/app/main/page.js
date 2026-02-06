@@ -662,7 +662,7 @@ export default function MainPage() {
                         ETH~Balance:
                     </h2>
                     <p className="text-base text-gray-700 text-right">
-                        {account ? "1.6377 ETH" : "—"}
+                        {account && ethBalance ? `${parseFloat(ethBalance).toFixed(4)} ETH` : "—"}
                     </p>
                     <div className="my-4 h-1 w-full bg-gradient-to-r from-black to-gray-400 rounded"></div>
                 </div>
