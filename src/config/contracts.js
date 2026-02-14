@@ -1,5 +1,5 @@
-import DSCEngineABI from "../contracts/DscEngine.json"
-import DecentralizedStableCoinABI from "../contracts/DecentralizedStablecoins.json"
+import DSCEngineABI from "../contracts/DSCEngine.json"
+import DecentralizedStableCoinABI from "../contracts/DecentralizedStableCoin.json"
 
 const NETWORKS = {
     31337: {
@@ -16,8 +16,8 @@ const NETWORKS = {
         name: "Sepolia Testnet",
         SepoliarpcUrl: "https://eth-sepolia.g.alchemy.com/v2/-qMDxbeGIXs--zEfQVQ1x",
         contracts: {
-            DSCEngine: "0xdE798F73481EFE9523d715A9F9b1afE54755b52E",
-            DSC: "0xDD2F2f8A74A9bB9D4Cfb8FD0De763A5d1B3e1a6c",
+            DSCEngine: "0x9A43ff6eB8B49358ecAf0Da7a1c1D1E679c00104",
+            DSC: "0x98562812815A5f68309891147D3090f69eAe1a23",
             WETH: "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
         },
     },

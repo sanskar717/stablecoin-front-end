@@ -182,27 +182,35 @@ export default function RepayDebtPage() {
             }
         }
     }
-
+   
     const calculateEthRequired = async (dscAmount) => {
-        if (!dscAmount || parseFloat(dscAmount) <= 0 || !dscEngine) {
+    if (!dscAmount || parseFloat(dscAmount) <= 0) {
+        setEstimatedEth("0.00")
+        return
+    }
+
+    try {
+        // User ke deposited collateral aur minted DSC se ratio calculate kar
+        const userDeposited = parseFloat(depositedEth)  // 0.1 ETH
+        const userMinted = parseFloat(dscMinted)         // 68 DSC
+        
+        if (userMinted === 0) {
             setEstimatedEth("0.00")
             return
         }
-
-        try {
-            const amount = ethers.parseEther(dscAmount)
-
-            const ethPrice = await dscEngine.getETHPriceInUSD()
-            const PRECISION = BigInt(1e18)
-
-            const requiredETH = (amount * PRECISION) / ethPrice
-
-            setEstimatedEth(ethers.formatEther(requiredETH))
-        } catch (error) {
-            console.error("Error calculating ETH required:", error)
-            setEstimatedEth("0.00")
-        }
+        
+        // Ratio: kitna ETH per DSC
+        const ethPerDSC = userDeposited / userMinted
+        
+        // Required ETH for repayment
+        const requiredETH = parseFloat(dscAmount) * ethPerDSC
+        
+        setEstimatedEth(requiredETH.toFixed(6))
+    } catch (error) {
+        console.error("Error:", error)
+        setEstimatedEth("0.00")
     }
+}
 
     const handleRepayWithETH = async () => {
         if (!ethRepayAmount || parseFloat(ethRepayAmount) <= 0) {
