@@ -2,6 +2,12 @@
 
 A decentralized stablecoin protocol built on Ethereum with collateralized debt positions, live price feeds, and a clean user interface. This is the **frontend** repository for the DSC Engine project.
 
+## 🌐 Live Demo
+
+**[🚀 Launch App](https://stablecoin-front-end-7.vercel.app/)**
+
+> Connect MetaMask on **Sepolia Testnet** to interact with the protocol.
+
 ## 🏗️ Project Overview
 
 DSC Engine is a DeFi protocol that allows users to:
